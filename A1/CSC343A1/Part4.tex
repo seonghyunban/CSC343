@@ -1,0 +1,182 @@
+\section{Part 4}
+
+
+\begin{enumerate}[label=\textbf{\arabic*.}]
+% 1
+\item
+Not expressable
+
+% 2
+\item \textbf{FlightRename}(flight, tailNumber, schedDeparture, flightNumber) := $\Pi_{id, plane, schedDeparture,route}$(\textbf{Flight}) \\
+
+\textbf{DelayedFlight}(flight, tailNumber, schedDeparture,dateTime, flightNumber) := \\
+$\sigma_{\substack{dateTime - schedDeparture \geq 1 hour\\
+\bigcap  \\
+schedDeparture.year = 2024\\}}\Bigg(\rel{FlightRename} \bowtie \rel{Departure}\Bigg)$\\
+
+\textbf{DelayedFinal}(flight, tailNumber, schedDeparture,dateTime,airline, flightNumber) := \\$\Pi_{flight, plane, schedDeparture,dateTime, airline, flightNumber}(\rel{DelayedFlight} \bowtie \rel{Plane})$\\
+
+\textbf{AtLeastThree}(airline) := $\Pi_{airline}\sigma_{\substack{T1.airline=T2.airline \\ \bigcap \\ T2.airline=T3.airline \\ \bigcap \\ T1.flight \neq T2.flight \\ \bigcap \\ T2.flight \neq T3.flight \\ \bigcap \\ T1.flight \neq T3.flight \\}}\Bigg(\rho_{T_1} \rel{DelayedFinal} \times \rho_{T_2} \rel{DelayedFinal} \times \rho_{T_3} \rel{DelayedFinal}\Bigg)$\\
+
+\textbf{AtLeastThreeAllFlights}(flight,airline, scheDeparture, flightNumber):=\\$\Pi_{flight, airline, schedDeparture, flightNumber}(\rel{AtLeastThree} \bowtie \rel{DelayedFinal})$\\
+
+\textbf{NotMostRecentFlight}(flight, airline, scheDeparture, flightNumber) := \\
+$\Pi_{T4.flight, airline, T4.schedDeparture, T4.flightNumber}$\\$\Bigg(\sigma_{\substack{T4.airline=T5.airline \\ \bigcap \\ T4.schedDeparture < T5.schedDeparture \\}}\Bigg(\rho_{T_4}(AtLeastThreeAllFlights) \times \rho_{T_5}(\rel{AtLeastThreeAllFlights})\Bigg)\Bigg)$\\
+    
+\textbf{AtLeastThreeMostRecentFlights}(flight,code,flightNumber) := \\ $\Pi_{flight, airline, flightNumber}(\rel{AtLeastThreeAllFlights}-\rel{NotMostRecentFlight})$\\
+
+$\Pi_{code,name,flightNumber}(\rel{AtLeastThreeMostRecentFlights} \bowtie \rel{Airline})$\\
+
+
+\newpage
+% 3
+\item 
+
+$\rel{CityWithAirport}_{(city)} := \Pi_{city}(\rel{Airport})$\\
+
+$\rel{CityWithRouteEnding}_{(city)} := \Pi_{city}(\rel{Airport} \join{Airport.code = Route.destination} \rel{Route})$\\
+
+$\rel{CityWithoutRouteEnding}_{(city)} := \rel{CityWithAirport} - \rel{CityWithRouteEnding}$\\
+
+$\rel{Answer} := \Pi_{name, city} (\rel{CityWithoutRouteEnding} \join_{CityWithoutRouteEnding.city = city.id} \rel{City})$\\
+
+
+% 4
+\item
+
+$\rel{FlightRoutePrice} := \rel{Flight} \bowtie_{Flight.route = Route.flightNumber} \rel{Route} \join_{Flight.id = FlightPrice.flight}\rel{FlightPrice}$
+
+$\rel{SameRoutePair} := \sigma_{
+\substack{R1.id \neq R2.id \\
+          R1.airline \neq R2.airline\\
+          R1.source \neq R2.source\\
+          R1.destination \neq R2.destination\\
+          (R1.price < R2.price) \lor (R1.id < R2.id) 
+          }}\Bigg( \rho_{R1}(\rel{FlightRoutePrice}) \times  \rho_{R2}(\rel{FlightRoutePrice}) \Bigg)$\\
+
+$\rel{Answer} := \Pi_{R1.id, R1.flightNumber, R2.id, R2.flightNumber}(\rel{SameRoutePair})$
+          
+          
+
+
+% 5
+\item 
+
+$\rel{F}_{(id, source, destination, schedDeparture, schedArrival)}\\
+:= \project_{id, source, destination, schedDeparture, schedArrival} (\rel{Flight} \join_{Flight.route = Route.flightNumber} \rel{Route})$\\
+
+$\rel{AfterJune17}_{(id, source, destination, schedDeparture, schedArrival)} := \select_{schedArrival > 2025-06-17} \rel{F}$\\
+
+$\rel{Direct}_{(schedDeparture, schedArrival)} := \project_{schedDeparture, schedArrival} \Big( \select_{\substack{source = 'YYZ'\\ \land destination = 'LIS'}} \rel{AfterJune17} \Big)$
+
+$\rel{Layover}_{(schedDeparture, schedArrival)}\\
+:= \project_{\substack{F1.schedDeaparture,\\ F2.schedArrival}} \Bigg( \select_{\substack{F1.source = 'YYZ' \\ F1.destination = F2.source \\ F2.destination = 'LIS' \\ 1hour \leq F2.schedDeparture - F1.schedArrival \leq 24hours}} \Big(\rename_{F1} (AfterJune17) \product \rename_{F2} (AfterJune17) \Big)\Bigg)$
+
+$\rel{YYZToLIS}_{(schedDeaparture, schedArrival)} := Direct \cup Layover$
+
+
+\newpage
+
+% 6
+\item  \textbf{BookingRename}(id,flight) := $\Pi_{passenger, flight}(\rel{Booking})$.\\
+
+\textbf{FlightRename}(flight, schedDeparture) := $\Pi_{id, schedDeaparture}(\rel{Flight})$.\\
+
+\textbf{PairWithDiffTirp}(id1,flight1,schedDeparture1,id2,flight2,schedDeparture2):=\\$\Pi_{T1.id,T1.flight,T1.schedDeparture1,T2.id,T2.flight,T2.schedDeparture1}(\sigma_{\substack{
+T1.flight \neq T2.flight \\ \bigcup \\ T1.id\geq T2.id}}\Bigg(\rho_{T_1}(\rel{FlightRename} \bowtie \rel{BookingRename}) \times \rho_{T_2}(\rel{FlightRename} \bowtie \rel{BookingRename})\bigg))$\\
+\textbf{InvalidPairs}(id1,id2):=$\Pi_{id1,id2}(\rel{PairWithDiffTirp})$\\
+
+\textbf{AllPairs}(id1,id2):=$\Pi_{id1,id2}(\rho_{T_1}(\rel{FlightRename} \bowtie \rel{BookingRename}) \times \rho_{T_2}(\rel{FlightRename} \bowtie \rel{BookingRename})$\\
+
+\textbf{ValidPairs}(id1,id2):=$\Pi_{id1,id2}(AllPairs-InvalidPairs)$\\
+
+\textbf{PairsOfSameName}(id1,id2):=$\Pi_{id1,id2}\sigma_{\substack{T3.surName=T4.surname \\ \bigcap \\ T3.id < T4.id \\}}\bigg(\rho_{T_3} \rel{Passenger} \times \rho_{T_4} \rel{Passenger}\bigg)$\\
+
+\textbf{FinalPair}(id1,id2) := \textbf{ValidPairs} $\bigcap$ \textbf{PairsOfSameName}\\
+
+\textbf{GetNotMostRecentTrip}(id1,id2,flight) := $\Pi_{T5.id1,T5.id2,T5.flight}$
+$(\sigma_{\substack{T5.schedDeparture<T6.schedDeparture \\ \bigcap \\ T5.id1=T6.id1 \\ \bigcap \\ T5.id2=T6.id2}}$\\$\bigg((\rel{FinalPair} \bowtie_{id1=id} (\rel{BookingRename} \bowtie \rel{Flight})) \bowtie_{\substack{T5.id1=T6.id1 \\ \bigcap \\ T5.id2 = T6.id2}} (\rel{FinalPair} \bowtie_{id1=id} (\rel{BookingRename} \bowtie \rel{Flight})))\bigg)$\\
+
+\textbf{AllTrip}(id1,id2,flight):=$\Pi_{T5.id1,T5.id2,flight}(\sigma_{\substack{T5.id1=T6.id1 \\ \bigcap \\ T5.id2=T6.id2}}(\rel{FinalPair} \bowtie_{id1=id} (\rel{BookingRename} \bowtie \rel{Flight})))$\\
+
+\textbf{MostRecentTrip}(id1,id2,flight) := \textbf{AllTrip} - \textbf{GetNotMostRecentTrip}\\
+
+$\Pi_{P_1.firstName,P_1.surName,P_2.firstName,P_2,surName,flight}(\sigma_{\substack{P_1.id=id1 \\ \bigcap \\ P_2.id=id2}}(\rel{MostRecentTrip} \times  \rho_{P_1} \rel{Passenger} \times \rho_{P_2} \rel{Passenger}))$\\
+
+$\rel{PBF}_{expanded} := \rel{Passenger} \join_{Passenger.id = Booking.passenger} \rel{Booking} \join_{Booking.flight = Flight.id} \rel{Flight}$
+
+$\rel{PBF} := \Pi_{id, passenger, firstname, surName, flight, schedDeparture}(\rel{PBF}_{expanded})$
+
+$\rel{SameSurnameFlight} := \sigma_{\substack{
+                              P1.passenger \neq P2.passenger\\
+                              P1.surname = P2.surname\\
+                              P1.flight = P2.flight}}
+                              \bigg(\rho_{P1}(\rel{PBF}) \times \rho_{P2}(\rel{PBF})\bigg)$
+                            
+
+$\rel{AtLeastOneMismatch}$
+
+
+\newpage
+% 7
+\item \textbf{AtLeastFourTimes}(tailNumber):=$\Pi_{plane}(\sigma_{\substack{T_1.plane=T_2.plane=T_3.plane=T_4.plane \\ \bigcap \\ T_1.id \neq T_2.id \neq T_3.id \neq T_4.id\\}}\bigg(\rho_{T_1} \rel{Flight} \times \rho_{T_2} \rel{Flight} \times \rho_{T_3} \rel{Flight} \times \rho_{T_4} \rel{Flight}\bigg))$\\
+
+\textbf{AllPlanes}(tailNumber):=$\Pi_{tailNumber}(\rel{Plane})$\\
+
+\textbf{PlanesLessThanFour}(tailNumber) := \textbf{AllPlanes} - \textbf{AtLeastFourTimes}\\
+
+$\Pi_{tailNumber,airline}(\rel{PlanesLessThanFour} \bowtie \rel{Plane})$
+
+% 8
+\item \textbf{PassengerEverBookAtLeastTwo}(id):= $\Pi_{T_1.passenger}\sigma_{\substack{T_1.passenger=T_2.passenger \\ \bigcap \\ T_1.flight = T_2.flight \\ \bigcap \\ T_1.seat \neq T_2.seat}}(\rho_{T_1} \rel{Booking}  \times \rho_{T_2} \rel{Booking})$\\
+
+\textbf{PassengerEverBookAtLeastThree}(id):= $\Pi_{T_3.passenger}\sigma_{\substack{T_3.passenger=T_4.passenger=T_5.passenger \\ \bigcap \\ T_3.flight = T_4.flight = T_5.flight\\ \bigcap \\ T_3.seat \neq T_4.seat \neq T_5.seat}}(\rho_{T_3} \rel{Booking}  \times \rho_{T_4} \rel{Booking} \times \rho_{T_5} \rel{Booking})$\\
+
+\textbf{PassengerEverBookAtMostTwo}(id):=$\Pi_{passenger}$ \textbf{PassengerEverBookAtLeastTwo} - \textbf{PassengerEverBookAtLeastThree}\\
+
+\textbf{PassengerEverBookAtMostOne}(id):=$\Pi_{passenger} \rel{Booking}$ - \textbf{PassengerEverBookAtLeastTwo}\\
+
+\textbf{PassengerAlwaysBookTwo}(id):= \textbf{PassengerEverBookAtMostTwo} - \textbf{PassengerEverBookAtMostOne}\\
+
+\textbf{PassengerBookSameRow}(id):= $\Pi_{T_6.passenger}\sigma_{\substack{T_6.passenger=T_7.passenger \\ \bigcap \\ T_6.flight = T_7.flight \\ \bigcap \\ T_6.seat \neq T_7.seat \\ \bigcap \\ T_6.row = T_7.row}}$ \\ $(\rho_{T_6} \rel{Booking}   \bowtie_{Booking.seat=Seat.id} \rel{Seat}) \times \rho_{T_7} \rel{Booking} \bowtie_{Booking.seat=Seat.id} \rel{Seat})$\\
+
+\textbf{PassengerNeverBookSameRow}(id):=$\Pi_{passenger} \rel{Booking}$ - \textbf{PassengerBookSameRow}\\
+
+\textbf{PassengerNeverBookSameRow} $\bigcap$ \textbf{PassengerAlwaysBookTwo}
+
+
+
+\newpage
+% 9
+\item Not expressable
+
+% 10
+\item \textbf{PassengerPaidEqualOrMore}(id):=$\Pi_{Passenger} \sigma_{Booking.price \geq FlightPrice}((\rel{Booking} \bowtie_{FlightPrice.flight=Booking.flight} \rel{FlightPrice}) \bowtie_{\substack{Booking.seat=Seat.id \\ \bigcap \\ FlightPrice.class=Seat.class}} \rel{Seat})$\\
+
+$\Pi_{passenger} \rel{Booking}$ - \textbf{PassengerPaidEqualOrMore}\\
+
+% 11
+\item
+
+$\rel{B}_{(bookId, seat, flight, paidPrice)} := \rename_{B_{(bookid, seat, flight, paidPrice)}} \Big( \project_{id, seat, flight, price} \rel{Booking} \Big)$\\
+
+$\rel{F}_{(flightId, route)} := \rename_{F_{(flightId, route)}} \Big( \project_{id, seat, flight, price} \rel{Flight} \Big)$\\
+
+$\rel{R}_{(routeId, airline)} := \rename_{R_{(routeId, airline)}} \Big( \project_{flightNumber, airline} \rel{Route} \Big)$\\
+
+$\rel{S}_{(seatId, class)} := \rename_{S_{(seatId, class)}} \Big( \project_{id, class} \rel{Seat} \Big)$\\
+
+$\rel{P}_{(flight, class, price)} := \rename_{S_{(flight, class, price)}} \rel{FlightPrice} \Big)$\\
+
+$\rel{RoutesDetail}_{(bookId, routeId, price, paidPrice, airline)}\\
+:= \project_{\substack{B.bookId, \\ R.routeId, \\ P.price, \\ B.paidPrice, \\ R.airline}} \Bigg( \rel{B} \join_{\substack{B.flight\\ = F.flightId}} \rel{F} \join_{\substack{F.route\\ = R.routeId}} \rel{R} \join_{\substack{B.seat \\ = S.seatId}} \rel{S} \join_{\substack{F.flightId = P.flight \\ \land S.class = P.class}} \rel{P} \Bigg)$\\
+
+$\rel{UnpopularRoutes}_{(routeId, airline)} := \project_{routeId, airline} \Big( \select_{paidPrice \leq price / 2} \rel{RoutesDetail} \Big)$\\
+
+$\rel{AllRoutes}_{(routeId, airline)} := \rename_{tmp_{(routeId, airline)}}(\project_{flightNumber, airline} \rel{RoutesDetail})$\\
+
+$\rel{PopularRoutes}_{(routeId, airline)} := \rel{AllRoutes} - \rel{UnpopularRoutes}$\\
+
+$\rel{AirlinesOperatedPopularRoute} := \project_{airlines} \rel{RoutesDetail} - \rel{PopularRoutes}$
+
+\end{enumerate}

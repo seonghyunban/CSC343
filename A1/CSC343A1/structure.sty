@@ -1,0 +1,109 @@
+% ===> PACKAGES
+\usepackage{amsmath,amsthm,amssymb}
+\usepackage{color}
+\usepackage{comment}
+\usepackage{enumitem}
+\usepackage{fancyhdr}
+\usepackage{titling}
+
+\usepackage{graphicx}
+\usepackage{epstopdf}
+\epstopdfsetup{update}
+
+\usepackage{mathtools}
+\usepackage[margin=1in]{geometry}
+\usepackage{thmtools}
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage{hyperref}
+\usepackage{physics}
+\usepackage{xcolor}
+
+\usepackage{algorithm}
+\usepackage{algpseudocode}
+
+% ===> PARAMETERS
+\pagestyle{fancy}
+
+% ===> MACROS
+\setlength{\parindent}{0em}
+\setlength{\parskip}{1em}
+
+%	\def\macrosName{Fill in the content of the macros and use \textit{\\macrosName} whenever necessary}
+\def\NN{\mathbb{N}}
+\def\ZZ{\mathbb{Z}}
+\def\QQ{\mathbb{Q}}
+\def\RR{\mathbb{R}}
+\def\CC{\mathbb{C}}
+\def\join{\bowtie}
+\def\select{\sigma}
+\def\project{\pi}
+\def\product{\times}
+\def\emptyset{\varnothing}
+\def\rename{\rho}
+
+\newcommand\rel[1]{\textbf{#1}}
+\newcommand{\ol}[1]{\overline{#1}}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\C}{\mathbb{C}}
+\newcommand{\Q}{\mathbb{Q}}
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\I}{\mathbb{I}}
+\newcommand{\mr}[1]{\mathring{#1}}
+\newcommand{\cvec}[2]{\begin{bmatrix}#1 \\ #2 \end{bmatrix}}
+\newcommand{\set}[1]{\left\{#1\right\}}
+\newcommand{\brackets}[1]{\left[#1\right]}
+\newcommand{\parens}[1]{\left(#1\right)}
+\newcommand{\toinf}[2]{\lim_{#1 \rightarrow \infty}\parens{#2}}
+\newcommand{\toninf}[2]{\lim_{#1 \rightarrow -\infty}\parens{#2}}
+\newcommand{\toz}[2]{\lim_{#1 \rightarrow 0}\parens{#2}}
+\newcommand{\toa}[3]{\lim_{#1 \rightarrow #2}\parens{#3}}
+\newcommand{\seq}[3]{\set{#1_{#2}}_{#2 = #3} ^ {\infty}}
+\newcommand{\Var}[1]{\var\brackets{#1}}
+\newcommand{\Ex}[1]{\Exp\brackets{#1}}
+
+\newcommand{\algheading}[1]{\vspace{1em} \Statex \hspace{1em}  \textcolor{greyscale30}{\textit{\bfseries #1}}}%
+\algdef{SE}[FOR]{ForAll}{EndForAll}[1]{\algorithmicforall\ (#1)}{\algorithmicend\ \algorithmicfor}%
+\algdef{SE}[IF]{If}{EndIf}[1]{\algorithmicif\ #1}{\algorithmicend\ \algorithmicif}%
+\algdef{C}[IF]{IF}{ElsIf}[1]{\algorithmicelse\ \algorithmicif\ #1}%
+
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{claim}[theorem]{Claim}
+
+\DeclareMathOperator{\size}{size}
+\DeclareMathOperator{\proj}{proj}
+\DeclareMathOperator{\Exp}{\mathbb{E}}
+
+\DeclarePairedDelimiter{\angles}{\langle}{\rangle}
+\DeclarePairedDelimiter\ceil{\lceil}{\rceil}
+\DeclarePairedDelimiter\floor{\lfloor}{\rfloor}
+\DeclarePairedDelimiter\anglebrac{\langle}{\rangle}
+
+\definecolor{greyscale10}{RGB}{26, 26, 26}   % Very dark grey
+\definecolor{greyscale20}{RGB}{51, 51, 51}   % Dark grey
+\definecolor{greyscale30}{RGB}{77, 77, 77}   % Medium-dark grey
+\definecolor{greyscale40}{RGB}{102, 102, 102} % Medium grey
+\definecolor{greyscale50}{RGB}{128, 128, 128} % Neutral grey
+\definecolor{greyscale60}{RGB}{153, 153, 153} % Medium-light grey
+\definecolor{greyscale70}{RGB}{179, 179, 179} % Light grey
+\definecolor{greyscale80}{RGB}{204, 204, 204} % Very light grey
+\definecolor{greyscale90}{RGB}{230, 230, 230} % Almost white
+\definecolor{greyscale100}{RGB}{255, 255, 255} % Pure white
+
+% ===> Command Definitions <===
+\newcommand{\rubric}[1]{\emph{\textcolor{blue}{#1}}}
+\newcommand{\note}[1]{\textcolor{red}{#1}}
+
+% ---> usage: \fig{NAME}{SCALE}{CAPTION}
+\newcommand\fig[3]{
+	\begin{figure}[ht]
+		\centering
+		\includegraphics[scale=#2]{Figures/#1}
+		\caption{#3}
+		\label{fig:#1}
+	\end{figure}
+}	

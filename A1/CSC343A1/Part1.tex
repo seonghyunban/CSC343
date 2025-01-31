@@ -1,0 +1,204 @@
+\section{Part 1}
+\begin{table}[h!]
+\centering         
+\begin{tabular}{|c|c|c|} 
+\hline             
+id & name & country \\ 
+\hline
+1 & Toronto & Canada \\ 
+\hline
+2 & Rome & Italy \\
+\hline
+3 & Frankfurt & Germany \\ 
+\hline
+\end{tabular}
+\caption{City} 
+\label{tab:example} 
+\end{table}
+
+\begin{table}[h!] 
+\centering          
+\begin{tabular}{|c|c|} 
+\hline             
+code & name \\ 
+\hline
+1 & Air Canada \\ 
+\hline
+2 & Lufthansa \\ 
+\hline
+\end{tabular}
+\caption{Airline} 
+\label{tab:example} 
+\end{table}
+
+\begin{table}[h!]
+\centering         
+\begin{tabular}{|c|c|c|} 
+\hline             
+id & firstName & surName \\ 
+\hline
+1 & Sadia & Li \\ 
+\hline
+2 & Sadia & Li \\ 
+\hline
+3 & Sadia & Li \\ 
+\hline
+\end{tabular}
+\caption{Passenger} 
+\label{tab:example} 
+\end{table}
+
+\begin{table}[h!]
+\centering         
+\begin{tabular}{|c|c|c|} 
+\hline             
+tailNumber & model & airline \\ 
+\hline
+1 & Boeing 777 & 1 \\ 
+\hline
+2 & Boeing 777 & 2 \\
+\hline
+3 & Boeing 777 & 2 \\ 
+\hline
+\end{tabular}
+\caption{Plane} 
+\label{tab:example} 
+\end{table}
+
+\begin{table}[h!]
+\centering         
+\begin{tabular}{|c|c|c|c|c|} 
+\hline             
+id & plane & row & letter & class \\ 
+\hline
+1 & 1 & 1 & A & Economy\\ 
+\hline
+2 & 2 & 2 & A & Business\\
+\hline
+3 & 3 & 3 & A & First\\ 
+\hline
+\end{tabular}
+\caption{Seat} 
+\label{tab:example} 
+\end{table}
+
+\begin{table}[h!]
+\centering         
+\begin{tabular}{|c|c|c|} 
+\hline             
+code & name & city \\ 
+\hline
+YYZ & Toronto Pearson International Airport & 1 \\ 
+\hline
+FCO & Leonardo da Vinci International Airport & 2 \\
+\hline
+FRA & Frankfurt Airport & 3 \\ 
+\hline
+\end{tabular}
+\caption{Airport} 
+\label{tab:example} 
+\end{table}
+
+\begin{table}[h!]
+\centering         
+\begin{tabular}{|c|c|c|c|} 
+\hline             
+flightNumber & airline & source & destination \\ 
+\hline
+AC890 & 1 & YYZ & FCO\\ 
+\hline
+LH231 & 2 & FCO & FRA\\
+\hline
+LH470 & 2 & FRA & YYZ\\ 
+\hline
+\end{tabular}
+\caption{Route} 
+\label{tab:example} 
+\end{table}
+
+\newpage
+
+\begin{table}[h!]
+\centering         
+\begin{tabular}{|c|c|c|c|c|} 
+\hline             
+id & route & plane & schedDeparture & schedArrival \\ 
+\hline
+1 & AC890 & 1 & 2025-05-01 23:40 & 2025-05-02 8:05\\ 
+\hline
+2 & LH231 & 2 & 2025-05-22 8:00 & 2025-05-22 10:00\\
+\hline
+3 & LH470 & 3 & 2025-05-22 11:55 & 2025-05-22 20:20\\ 
+\hline
+\end{tabular}
+\caption{Flight} 
+\label{tab:example} 
+\end{table}
+
+\begin{table}[h!] 
+\centering          
+\begin{tabular}{|c|c|} 
+\hline             
+flight & dateTime \\ 
+\hline
+1 & 2025-05-01 23:45 \\ 
+\hline
+2 & 2025-05-22 8:00 \\ 
+\hline
+2 & 2025-05-22 11:55 \\ 
+\hline
+\end{tabular}
+\caption{Departure} 
+\label{tab:example} 
+\end{table}
+
+\begin{table}[h!] 
+\centering          
+\begin{tabular}{|c|c|} 
+\hline             
+flight & dateTime \\ 
+\hline
+1 & 2025-05-02 8:15 \\ 
+\hline
+2 & 2025-05-22 10:00 \\ 
+\hline
+2 & 2025-05-22 20:20 \\ 
+\hline
+\end{tabular}
+\caption{Arrival} 
+\label{tab:example} 
+\end{table}
+
+\begin{table}[h!]
+\centering         
+\begin{tabular}{|c|c|c|} 
+\hline             
+flight & class & price \\ 
+\hline
+1 & Economy & 600 \\ 
+\hline
+2 & Business & 950 \\
+\hline
+3 & First & 1200 \\ 
+\hline
+\end{tabular}
+\caption{FlightPrice} 
+\label{tab:example} 
+\end{table}
+
+\begin{table}[h!]
+\centering         
+\begin{tabular}{|c|c|c|c|c|c|} 
+\hline             
+id & passenger & seat & flight & price & dateTime \\ 
+\hline
+1 & 1 & 1 & 1 & 600 & 2024-12-06 21:00\\ 
+\hline
+2 & 2 & 2 & 2 & 950 & 2025-05-09 9:00\\
+\hline
+3 & 3 & 3 & 3 & 1200 & 2025-05-09 9:00\\ 
+\hline
+\end{tabular}
+\caption{Booking} 
+\label{tab:example} 
+\end{table}

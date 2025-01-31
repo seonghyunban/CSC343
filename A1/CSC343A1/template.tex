@@ -1,0 +1,175 @@
+\documentclass{article}
+\usepackage{fullpage}
+\usepackage[normalem]{ulem}
+\usepackage{amstext,amsmath,amssymb}
+\usepackage{pifont}% http://ctan.org/pkg/pifont
+\usepackage{xcolor}
+
+\newcommand{\var}[1]{\mathit{#1}}
+
+
+\setlength{\parskip}{6pt}
+
+\begin{document}
+
+~~~\vspace{-2.0cm}
+
+\noindent
+University of Toronto\\
+{\sc csc}343, Fall 2023\\[10pt]
+{\LARGE\bf Assignment 1: Your name and student number here}
+
+\section*{Delete this before you hand in}
+
+\noindent
+Unary operators on relations:
+\begin{itemize}
+\item $\Pi_{x, y, z} (R)$
+\item $\sigma_{condition} (R) $
+\item $\rho_{New} (R) $
+\end{itemize}
+Binary operators on relations:
+\begin{itemize}
+\item $R \times S$
+\item $R \bowtie S$
+\item $R \bowtie_{condition} S$
+\item $R \cup S$
+\item $R \cap S$
+\item $R - S$
+\end{itemize}
+Logical operators:
+\begin{itemize}
+\item $\vee$
+\item $\wedge$
+\item $\neg$
+\end{itemize}
+Assignment:
+\begin{itemize}
+\item $New(a, b, c) := R$
+\end{itemize}
+General LaTeX tips:
+\begin{itemize}
+\item Some sequences of letters look terrible in ``math mode" (inside dollar signs).
+For example, \verb|$Offer$| comes out as $Offer$.
+You can use \verb|\var| to fix that.
+For example, \verb|$\var{Offer}$| comes out as $\var{Offer}$.
+\item When an expression is deeply nested, it can be hard to match the brackets with your eyes.
+You can vary the size of the brackets to make that easier.
+This LaTeX: \\[5pt]
+\hspace*{1cm} \verb+\Bigg(  \bigg[   \Big(  \big(   \big)  \Big)  \bigg]  \Bigg)+ \\[5pt]
+produces this result: \\[5pt]
+\hspace*{1cm}  \Bigg( \bigg[ \Big( \big(  \big) \Big) \bigg] \Bigg)
+\item 
+Some of your expressions will become very wide because there are multiple, long
+conditions on a select.
+You can stack those conditions using \verb|\substack|.
+Here's an example:
+$$
+\sigma_{\substack{x < 20 \\ \wedge \\ y = 10}} (\var{Some~big~expression}) \\[5pt]
+$$
+Notice that this requires using the package called ``amsmath", which is accomplished by saying\\
+\verb|\usepackage{amsmath}|.
+\end{itemize}
+
+{~}\\
+Below we've included names for the assignment questions, and 
+a nonsense example of how a query might look in LaTeX.  
+As required in this assignment, it uses ``--" to indicate comments.
+Note that we have added less vertical space between comments
+and the algebra they pertain to than between steps in the algebra.
+This helps the comments visually stick to the algebra.
+
+
+
+%----------------------------------------------------------------------------------------------------------------------
+\section*{Part 1: Queries}
+
+\begin{enumerate}
+\item   % ----------
+Adequate insurance.
+
+{~}\\ % This puts a newline in to move the answer down a bit from the text above.
+{\large %This increase in font size makes the subscripts much more readable.
+-- sID has a grade of at least 85. \\[5pt]
+$
+HaveHighGrade(\var{sID}) := 
+	\Pi_{sID} 
+	\sigma_{grade \ge 85} 
+	Took \\[10pt]
+$
+-- sID passed a course taught by Atwood. \\[5pt]
+$
+PassedAtwood(\var{sID}) := 
+	\Pi_{\var{sID}} 
+	\sigma_{instructor := ``Atwood" \wedge grade \ge 50} 
+	(Took \bowtie \var{Offering}) 
+	\\[10pt]
+$
+-- sID got 100 at least twice. \\[5pt]
+$
+AtLeastTwice(\var{sID}) := \\[5pt]  %This RA statement is too long, so we break it into two lines.
+	\hspace*{1cm}  % This command creates an indentation
+	\Pi_{T1.\var{sID}} 
+	\sigma_{
+		T1.\var{oID} \neq T2.\var{oID} \wedge 
+		T1.\var{sID} = T2.\var{sID} \wedge 
+		T1.grade = 100 \wedge T2.grade = 100}
+	[ (\rho_{T1}Took) \times (\rho_{T2}Took) ] \\[5pt]
+$
+} % End of font size increase.
+
+
+\item   % ----------
+Most prolific donor.
+
+\item   % ----------
+Experts not supervising anyone.
+
+\item   % ----------
+Last three staff members.
+
+\item   % ----------
+Not using tags well.
+
+\item   % ----------
+Eclectic donations.
+
+\item   % ----------
+Small primary terms.
+
+\item   % ----------
+Not giving your staff broad experience.
+
+\item   % ----------
+Big donors.
+
+\item   % ----------
+Increasing generosity.
+
+\item   % ----------
+Tag fads.
+
+\item   % ----------
+Inactive volunteers.
+
+\end{enumerate}
+
+
+
+
+
+
+%----------------------------------------------------------------------------------------------------------------------
+\section*{Part 2: Additional Integrity Constraints}
+
+\begin{enumerate}
+
+\item   % ----------
+Who can supervise whom.
+
+\end{enumerate}
+
+\end{document}
+
+
+

@@ -1,0 +1,85 @@
+\section*{Part 5}
+
+
+\begin{enumerate}[label=]
+    \item \textbf{1.} 
+    \begin{itemize}[label=]
+        \item Cannot be expressed.
+    \end{itemize}
+
+    \item \textbf{2.} 
+    \begin{itemize}[label=]
+        \item $\select_{\text{Booking.dateTime} \geq \text{Flight.schedDeparture}} \Big( \rel{Booking} \join_{\text{Booking.flight = Flight.id}} \rel{Flight} \Big) = \varnothing$
+        \item $\select_{\text{Departure.dateTime} < \text{Flight.schedDeparture}} \Big( \rel{Departure} \join_{\text{Departure.flight = Flight.id}} \rel{Flight} \Big) = \varnothing$
+        \item $\select_{\text{Arrival.dateTime} \leq \text{Departure.dateTime}} \Big( \rel{Departure} \join_{\text{Departure.flight = Arrival.flight}} \rel{Arrival} \Big) = \varnothing$
+        
+    \end{itemize}
+    \item \textbf{3.} 
+    \begin{itemize}[label=]
+        \item Cannot be expressed.
+    \end{itemize}
+
+    \item \textbf{4.} 
+    \begin{itemize}[label=]
+        \item Cannot be expressed.
+    \end{itemize}
+
+    \item \textbf{5.} 
+    \begin{itemize}[label=]
+        \item $\rel{AllClassForAllFlight}_{(flight, class)} := \project_{Flight.id, Seat.class} \Big( \select_{Flight.plane = Seat.plnae} \big(\rel{Flight} \product \rel{Seat}\big) \Big)$
+        \item $\rel{AllFlightClassInFlightPrice}_{(flight, class)} := \project_{flight, class} \rel{FlightPrice}$
+        \item $\rel{AllClassForAllFlight} - \rel{AllFlightClassInFlightPrice} = \emptyset$
+        \item $\rel{AllFlightClassInFlightPrice} - \rel{AllClassForAllFlight} = \emptyset$
+    \end{itemize}
+
+    \newpage
+    \item \textbf{6.} 
+    \begin{itemize}[label=]
+        \item $\rel{FR}_{\Bigg( \substack{id,\\ plane, \\ source,\\ destination,\\ schedDeparture} \Bigg)}:= \project_{\Bigg( \substack{Flight.id,\\ Flight.plane, \\ Route.source,\\ Route.destination,\\ Flight.schedDeparture} \Bigg)} \rel{Flight} \join_{\substack{Flight.route\\ = Route.flightNumber}} \rel{Route}$ 
+
+        \item $\rel{FRA1}_{\Bigg( \substack{id,\\ plane, \\ source,\\ destination,\\ schedDeparture \\ srcCity} \Bigg)} := \project_{\Bigg( \substack{FR.id,\\FR.plane, \\ FR.source,\\ FR.destination,\\ FR.schedDeparture \\ ASource.city} \Bigg)}\rel{FR} \join_{\substack{FR.source\\ = ASource.code}} \big(\rename_{ASource} \rel{Airport}\big)$
+
+        \item $\rel{FRA2}_{\Bigg( \substack{id,\\ plane, \\ source,\\ destination,\\ schedDeparture \\ srcCity \\ destCity} \Bigg)} := \project_{\Bigg( \substack{FRA1.id,\\ FRA1.plane \\ FRA1.source,\\ FRA1.destination,\\ FRA1.schedDeparture \\ FRA1.src \\ ADest.city} \Bigg)}\rel{FRA1} \join_{\substack{FRA1.destination\\ = ADest.code}} \big(\rename_{ADest} \rel{Airport}\big)$
+
+        \item $
+        \rel{FRC1}_
+        {\Bigg( \substack{id,\\ plane,  \\source,\\ destination,\\ schedDeparture \\ srcCity \\ destCity \\ srcCountry} 
+        \Bigg)} 
+        := 
+        \project_
+        {\Bigg( \substack{FRA2.id,\\ FRA2.plane, \\  FRA2.source,\\ FRA2.destination,\\ FRA2.schedDeparture, \\ FRA2.srcCity, \\ FRA2.destCity, \\ CSource.country} \Bigg)} 
+        \rel{FRA1} 
+        \join_{\substack{FRA2.srcCity\\ = CSource.id}} 
+        \big(\rename_{CSource} \rel{City}\big)$
+
+        \item $
+        \rel{FRC2}_
+        {\Bigg( \substack{id,\\  plane \\ source,\\ destination,\\ schedDeparture, \\ srcCity, \\ destCity, \\ srcCountry, \\ destCountry} 
+        \Bigg)} 
+        := 
+        \project_
+        {\Bigg( \substack{FRC1.id,\\ FRC1.plane, \\ FRC1.source,\\ FRC1.destination,\\ FRC1.schedDeparture, \\ FRC1.srcCity, \\ FRC1.destCity, \\ FRC1.srcCountry \\ CDest.country} \Bigg)} 
+        \rel{FRC1} 
+        \join_{\substack{FRC1.destCity\\ = CDest.id}} 
+        \big(\rename_{CDest} \rel{City}\big)$
+
+        \item $\rel{F}_{(id, plane, src, dest, depart)} := \project_{(id, plane, srcCountry, destCountry, schedDeparture)} \rel{FRC2}$
+
+        \item $\rel{NotDomesticFlights}_{(id, plane, src, dest, depart)} :=  := \select_{src \neq dest} F$
+
+        \item $\rel{D}_{(id, plane, src, dest, depart)} = \rel{F} - \rel{DomesticOnly}$
+        
+        \item $\rel{FourOrMore}_{\Bigg( \substack{id,\\ plane,\\ src,\\ dest,\\ depart} \Bigg)}$
+        
+        $:= \select_{\Bigg(\substack{
+        \forall i,j \in \{1,..., 4\}, month(D_i.depart) = month(D_j.depart)\\
+        \forall i,j \in \{1,..., 4\}, D_i.plane = D_j.plane \\
+        \forall i,j \in \{1,..., 4\}, D_i.id \neq D_j.id} \Bigg)} \Bigg( \rename_{D_1}(D) \product \rename_{D_2}(D) \product \rename_{D_3}(D) \product \rename_{D_4}(D) \product\Bigg)$ 
+
+        \item $\rel{FourOrMore} = \emptyset$
+
+        
+    \end{itemize}
+\end{enumerate}
+    
+
