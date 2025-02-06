@@ -24,18 +24,26 @@ CREATE VIEW CountryWith2Airport AS
     HAVING count(a.code) >= 2
 ;
 
+
 CREATE VIEW RouteExpanded AS
-    SELECT r.flight_num, sc.country as src, dc.country as dest
+    SELECT r.flight_num, sa.code as srcport, sc.country as src, da.code as destport, dc.country as dest
     FROM Route r JOIN Airport sa ON r.source = sa.code 
                  JOIN Airport da ON r.destination = da.code 
                  JOIN City sc    ON sa.city = sc.cid
                  JOIN City dc    ON da.city = dc.cid
+                 JOIN Flight f   ON r.flight_num = f.route
 ;
+
+CREATE VIEW OperationalAirports AS
+    SELECT country, port
+    FROM ((SELECT src as country, srcport as port FROM RouteExpanded) UNION (SELECT dest as country, destport as port FROM RouteExpanded))
+    WHERE country IN (SELECT country FROM CountryWith2Airport)
+;
+
+
 -- Your query that answers the question goes below the "insert into" line:
 INSERT INTO wu2
-    SELECT c.country, count(f.fid)
-    FROM Flight f JOIN RouteExpanded r ON f.route = r.flight_num
-                  CROSS JOIN CountryWith2Airport c
-    WHERE r.src = c.country or r.dest = c.country
-    GROUP BY c.country
+    SELECT country as country_name, count(port) as operational_airports
+    FROM OperationalAirports
+    GROUP BY country
 ;

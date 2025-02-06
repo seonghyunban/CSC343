@@ -24,7 +24,7 @@ CREATE VIEW PassengerBooks AS
 
 -- Your query that answers the question goes below the "insert into" line:
 INSERT INTO wu1
-    SELECT p1.last_name, p1.first_name, p2.first_name
+    SELECT p1.last_name as last_name, p1.first_name as p1_first_name, p2.first_name as p2_first_name
     FROM PassengerBooks p1, PassengerBooks p2
     WHERE 
         p1.pid != p2.pid and
