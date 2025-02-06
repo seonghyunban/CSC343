@@ -15,6 +15,7 @@ CREATE TABLE wu2 (
 -- If you do not define any views, you can delete the lines about views.
 DROP VIEW IF EXISTS CountryWith2Airport CASCADE;
 DROP VIEW IF EXISTS RouteExpanded CASCADE;
+DROP VIEW IF EXISTS OperationalAirports CASCADE;
 
 -- Define views for your intermediate steps here:
 CREATE VIEW CountryWith2Airport AS
