@@ -36,15 +36,16 @@ CREATE VIEW RouteExpanded AS
 ;
 
 CREATE VIEW OperationalAirports AS
-    SELECT country, port
-    FROM ((SELECT src as country, srcport as port FROM RouteExpanded) UNION (SELECT dest as country, destport as port FROM RouteExpanded))
-    WHERE country IN (SELECT country FROM CountryWith2Airport)
+    SELECT c.country, count(tmp.port) as count
+    FROM CountryWith2Airport c LEFT JOIN 
+                             ((SELECT src as country, srcport as port FROM RouteExpanded) UNION (SELECT dest as country, destport as port FROM RouteExpanded)) AS Tmp
+                             ON c.country = tmp.country
+    GROUP BY c.country
 ;
 
 
 -- Your query that answers the question goes below the "insert into" line:
 INSERT INTO wu2
-    SELECT country as country_name, count(port) as operational_airports
+    SELECT country as country_name, count as operational_airports
     FROM OperationalAirports
-    GROUP BY country
 ;
