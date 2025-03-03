@@ -45,24 +45,33 @@ CREATE VIEW FlightBookInfo AS (
 
 
 CREATE VIEW FlightBookNRouteNFullnessInfo AS (
-	SELECT F.fid, F.route, F.departed, F.plane, R.airline, F.num_booked, P.cap, (F.num_booked::FLOAT / P.cap) as fullness
-	FROM FlightBookInfo F 
-		JOIN Route R ON F.route = R.flight_num
-		JOIN PlaneInfo P ON F.plane = P.pid
+	SELECT F.fid, R.flight_num as route, F.departed, F.plane, R.airline, F.num_booked, P.cap,
+	(COALESCE(F.num_booked, 0)::FLOAT / P.cap) as fullness
+	FROM Route R
+		LEFT JOIN FlightBookInfo F ON F.route = R.flight_num
+		LEFT JOIN PlaneInfo P ON F.plane = P.pid
 );
 
 
 CREATE VIEW FullnessHistogram AS (
-	SELECT airline, route as flight_num,
-		count(*) FILTER (WHERE fullness < 0.2) as very_low,
-		count(*) FILTER (WHERE fullness >= 0.2 AND fullness < 0.4) as low,
-		count(*) FILTER (WHERE fullness >= 0.4 AND fullness < 0.6) as fair,
-		count(*) FILTER (WHERE fullness >= 0.6 AND fullness < 0.8) as normal,
-		count(*) FILTER (WHERE fullness >= 0.8) as high
+	SELECT airline, route,
+		count(*) FILTER (WHERE fullness < 0.2 
+							AND departed = TRUE) as very_low,
+		count(*) FILTER (WHERE fullness >= 0.2 
+							AND fullness < 0.4 
+							AND departed = TRUE) as low,
+		count(*) FILTER (WHERE fullness >= 0.4 
+							AND fullness < 0.6 
+							AND departed = TRUE) as fair,
+		count(*) FILTER (WHERE fullness >= 0.6 
+							AND fullness < 0.8 
+							AND departed = TRUE) as normal,
+		count(*) FILTER (WHERE fullness >= 0.8
+							AND departed = TRUE) as high
 	FROM FlightBookNRouteNFullnessInfo F
 	GROUP BY route, airline
+	ORDER BY airline, route
 );
-
 
 -- Your query that answers the question goes below the "insert into" line:
 INSERT INTO q1
